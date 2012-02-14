@@ -2,7 +2,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class Camper extends ConsoleApp{
+public class Camper extends ConsoleApp {
 
 	private String name;
 	
@@ -20,11 +20,11 @@ public class Camper extends ConsoleApp{
 		 return true;
 	}
 	
-	int getFrienemyRating(String c) {
+	int getFrienemyRating(Camper c) {
 		// no opinion is just plain 0 (though 0 may also be specified explicitly)
-		if(!frienemies.containsKey(c))
+		if(!frienemies.containsKey(c.name))
 			return 0;
-		return frienemies.get(c);
+		return frienemies.get(c.name);
 	}
 	
 	@Override
@@ -45,7 +45,7 @@ public class Camper extends ConsoleApp{
 	public void print() {
 		out(name+": ");
 		for(Map.Entry<String, Integer> entry: frienemies.entrySet()) {
-			out(String.format("  %-8ds %d",entry.getKey(), entry.getValue()));
+			out(String.format("  %-8s %d",entry.getKey(), entry.getValue()));
 		}
 	}
 }

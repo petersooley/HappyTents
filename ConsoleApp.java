@@ -15,6 +15,7 @@ public class ConsoleApp {
 		}
 	}
 	
+	/*
 	protected static void out(String msg) {
 		System.out.println(msg);
 	}
@@ -47,9 +48,25 @@ public class ConsoleApp {
 	protected void out() {
 		System.out.println();
 	}
+	*/
+	
+	protected void out(Object o) {
+		System.out.println(o);
+		System.out.flush();
+	}
+	protected void out() {
+		System.out.println();
+		System.out.flush();
+	}
 	
 	protected void err(String msg) {
 		System.err.println(msg);
+		System.err.flush();
+	}
+	
+	protected void err() {
+		System.err.println();
+		System.err.flush();
 	}
 	
 	protected void vital(boolean expression) {

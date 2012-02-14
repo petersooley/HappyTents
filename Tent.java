@@ -1,12 +1,12 @@
 import java.util.ArrayList;
-import java.util.HashSet;
 
 
 public class Tent {
 
 	private int capacity = 0;
 	private int camperCount = 0;
-	private HashSet<Camper> campers = new HashSet<Camper>();
+
+	private ArrayList<Camper> campers = new ArrayList<Camper>();
 	
 	Tent(int capacity) {
 		this.capacity = capacity;
@@ -26,5 +26,19 @@ public class Tent {
 			--camperCount;
 		return rt;
 			
+	}
+	
+	public boolean atCapacity() {
+		return camperCount >= capacity;
+	}
+	
+	public int happiness() {
+		int happy = 0;
+		int size = campers.size();
+		for(int i = 0; i < size; ++i) 
+			for(int j = 0; j < size; ++j) 
+				if(i != j) 
+					happy += campers.get(i).getFrienemyRating(campers.get(j));
+		return happy;		
 	}
 }
