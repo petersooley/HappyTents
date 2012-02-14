@@ -1,6 +1,6 @@
-*The problem: http://drdobbs.com/184410645*
+The problem: http://drdobbs.com/184410645
 
-###Benchmarks
+Benchmarks
 1. Sort tents biggest capacity --> smallest
 2. Sort tents smallest capacity --> biggest
 3. Sort campers highest sum of preferences --> smallest
