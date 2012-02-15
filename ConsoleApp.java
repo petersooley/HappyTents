@@ -9,7 +9,6 @@ public class ConsoleApp {
 		try {
 			return new BufferedReader(new FileReader(file));
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 			out("ERROR: couldn't find "+file);
 			return null;
 		}

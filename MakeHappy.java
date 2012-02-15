@@ -1,13 +1,18 @@
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class MakeHappy extends ConsoleApp{
 
 	private ArrayList<Tent> tents = new ArrayList<Tent>();
 	private ArrayList<Camper> campers = new ArrayList<Camper>();
+	
+	// defined in handleArgs()
+	private Random rand;
 
-	public void setupTents(String tentListFile, boolean small2big) {
+	private void setupTents(String tentListFile) {
 		/*
 		if(small2big) {
 			tents.add(new Tent(2));
@@ -25,7 +30,7 @@ public class MakeHappy extends ConsoleApp{
 		}*/
 	}
 	
-	public void setupCampers(String prefTableFile) throws NumberFormatException, IOException {
+	private void setupCampers(String prefTableFile)  {
 		/*
 		// 2. Set up the campers and their preferences	
 		BufferedReader in = open("prefTableFile.txt");
@@ -75,6 +80,7 @@ public class MakeHappy extends ConsoleApp{
 	}
 	public void usage(String errorMsg) {
 		if(errorMsg != null) {
+			out();
 			out("ERROR: "+errorMsg);
 			out();
 		}
@@ -82,9 +88,11 @@ public class MakeHappy extends ConsoleApp{
 		out("MakeHappy [prefTableFile] [tentListTable]");
 		out();
 		out("This program attempts to solve the problem defined here: http://drdobbs.com/184410645.");
-		out("Default preference table: \"prefTableFile.txt\".");
-		out("Default tent list table: \"tentListTable.txt\".");
+		out("Default preference table: \"prefTable.txt\".");
+		out("Default tent list table: \"tentList.txt\".");
 		out("Default ordering of tents and campers is the order in the files.");
+		out();
+		out("NOTE: It doesn't matter which order you specify the instance data files. We'll figure it out!");
 		out();
 		out("Optimizations:");
 		out("  -t		order tents smallest to biggest");
@@ -98,7 +106,13 @@ public class MakeHappy extends ConsoleApp{
 		System.exit(1);
 	}
 	
-	public void handleArgs(String args[]) {
+	public void handleArgs(String args[]) throws IOException {
+		
+		// Defaults:
+		long seed = System.currentTimeMillis();
+		String prefTableFile = "prefTableFile.txt";
+		String tentListFile = "tentList.txt";
+		
 		for(int i = 0; i < args.length; ++i) {
 			String arg = args[i];
 			int len = arg.length() - 1;
@@ -117,6 +131,7 @@ public class MakeHappy extends ConsoleApp{
 					case 'c':
 						if(arg.charAt(j + 1) == '0') {
 							out("Sorting campers by zeros low to high...");
+							++j;
 						}
 						else {
 							out("Sorting campers by prefs low to high...");
@@ -125,6 +140,7 @@ public class MakeHappy extends ConsoleApp{
 					case 'C':
 						if(arg.charAt(j + 1) == '0') {
 							out("Sorting campers by zeros high to low...");
+							++j;
 						}
 						else {
 							out("Sorting campers by prefs high to low...");
@@ -132,12 +148,46 @@ public class MakeHappy extends ConsoleApp{
 						break;
 					case 'r':
 							out("Shuffling tents and campers...");
+							if(i + 1 < args.length && args[i + 1].charAt(0) != '-' && args[i + 1].matches("[0-9]+")) {
+								try {
+									seed = Long.parseLong(args[++i]);
+								}catch(NumberFormatException e) {
+									usage("What kind of seed is that???");
+								}
+							}
 						break;
+					case 'h':
+							usage();
+						break;
+					default:
+							usage("Weird argument. Just too weird.");
 					}
 				}
-			}		
+			}	
+			
+			// Filter files
+			BufferedReader in = open(arg);
+			String str;
+			while((str = in.readLine()) != null) {
+				if(str.matches("[a-zA-Z]+\\s*[a-zA-Z]+\\s*[-0-9]+")){
+					prefTableFile = arg;
+					break;
+				}
+				if(str.matches("\\s*\\d+\\s*")) {
+					tentListFile = arg;
+					break;
+				}
+			}
 			
 		}
+
+		out("Seed: "+seed);
+		rand = new Random(seed);
+		out("Tent list file: "+tentListFile);
+		setupTents(tentListFile);
+		out("Preference table file: "+prefTableFile);
+		setupCampers(prefTableFile);
+		
 	}
 
 }

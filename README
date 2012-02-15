@@ -1,10 +1,30 @@
-The problem: http://drdobbs.com/184410645
 
-Benchmarks
-1. Sort tents biggest capacity --> smallest
-2. Sort tents smallest capacity --> biggest
-3. Sort campers highest sum of preferences --> smallest
-4. Sort campers smallest sum of preferences --> highest
-5. Sort campers most zeros --> least
-6. Sort campers least zeros --> most
-7. Random order of tents and random order of campers.
+How to run
+---------------------------------------------------------------
+$ unzip MakeHappy.zip
+$ cd MakeHappy/
+$ java -cp `pwd` MakeHappy -h
+
+
+
+Instance Data File Specifications
+---------------------------------------------------------------
+Preference Table
+	Each line in preference table has three fields:
+		1. camper name,
+		2. mate name, and
+		3. camper's rating of mate.
+	Example: 
+		alan      mike      1
+		alan      felicia   0
+		bob       jack      7
+
+Tent List 
+	Each line in the tent list represents a tent and specifies its capacity.
+	Example with one 2-man tent and two 3-man and 4-man tents: 
+		2
+		3
+		3
+		4
+		4
+
