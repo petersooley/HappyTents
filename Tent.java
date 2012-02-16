@@ -38,7 +38,7 @@ public class Tent {
 		for(int i = 0; i < size; ++i) 
 			for(int j = 0; j < size; ++j) 
 				if(i != j) 
-					happy += campers.get(i).getFrienemyRating(campers.get(j));
+					happy += campers.get(i).getMateRating(campers.get(j));
 		return happy;		
 	}
 }

@@ -32,4 +32,5 @@ Tent List
 		3
 		4
 		4
+	NOTE: The lines are considered sorted. The search will start with the first line, then the second, etc.
 

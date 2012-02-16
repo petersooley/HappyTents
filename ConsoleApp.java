@@ -9,7 +9,7 @@ public class ConsoleApp {
 		try {
 			return new BufferedReader(new FileReader(file));
 		} catch (FileNotFoundException e) {
-			out("ERROR: couldn't find "+file);
+			out("ERROR: couldn't find file: "+file);
 			return null;
 		}
 	}
@@ -48,6 +48,14 @@ public class ConsoleApp {
 		System.out.println();
 	}
 	*/
+	
+	protected int [] reverse(int [] array) {
+		int [] newArray = new int[array.length];
+		for(int i = 0, j = array.length - 1; i < array.length; ++i, --j) {
+			newArray[i] = array[j];
+		}
+		return newArray;
+	}
 	
 	protected void out(Object o) {
 		System.out.println(o);

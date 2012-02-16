@@ -5,47 +5,50 @@ import java.util.Map;
 public class Camper extends ConsoleApp {
 
 	private String name;
+	private int numPrefs = 0; // not including zero ratings
+	private int sumPrefs = 0; 
 	
-	// HashMap<Friend/Enemy, Rating>...
-	private HashMap<String, Integer> frienemies = new HashMap<String, Integer>();
+	// HashMap<Mate_name, Rating>...
+	private HashMap<Camper, Integer> mates = new HashMap<Camper, Integer>();
 	
 	Camper(String name) {
 		this.name = name;
 	}
 	
-	boolean addFrienemy(String c, int rating) {
-		if(frienemies.containsKey(c)) 
+	boolean rateMate(Camper c, int rating) {
+		if(mates.containsKey(c)) 
 			return false;
-		 frienemies.put(c, rating);
+		 mates.put(c, rating);
+		 if(rating != 0) {
+			 ++numPrefs;
+		 }
+		 sumPrefs += rating;
 		 return true;
 	}
 	
-	int getFrienemyRating(Camper c) {
-		// no opinion is just plain 0 (though 0 may also be specified explicitly)
-		if(!frienemies.containsKey(c.name))
-			return 0;
-		return frienemies.get(c.name);
+	public int getNumberPrefs() {
+		return numPrefs;
+	}
+	public int getSumPrefs() {
+		return sumPrefs;
 	}
 	
-	@Override
-	public boolean equals(Object o) {
-		Camper c = (Camper) o;
-		return name.equals(c.name);
+	int getMateRating(Camper c) {
+		// no opinion is just plain 0 (though 0 may also be specified explicitly)
+		if(!mates.containsKey(c))
+			return 0;
+		return mates.get(c);
 	}
 	
 	public boolean isName(String name) {
 		return this.name.equals(name);
 	}
 	
-	@Override
-	public int hashCode() {
-		return name.hashCode();
-	}
 	
 	public void print() {
-		out(name+": ");
-		for(Map.Entry<String, Integer> entry: frienemies.entrySet()) {
-			out(String.format("  %-8s %d",entry.getKey(), entry.getValue()));
+		out(name+": numPrefs("+numPrefs+") sumPrefs("+sumPrefs+")");
+		for(Map.Entry<Camper, Integer> entry: mates.entrySet()) {
+			out(String.format("  %-8s %d",entry.getKey().name, entry.getValue()));
 		}
 	}
 }
