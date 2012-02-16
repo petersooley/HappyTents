@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.Random;
 
 
-public class MakeHappy extends ConsoleApp{
+public class MakeHappy extends Utilities{
 
 	private ArrayList<Tent> tents = new ArrayList<Tent>();
 	private ArrayList<Camper> campers = new ArrayList<Camper>();
@@ -62,7 +62,6 @@ public class MakeHappy extends ConsoleApp{
 			out("new tent of size "+capacities[i]);
 			tents.add(new Tent(capacities[i]));
 		}
-		//tents.add(new Tent(capacity));
 	}
 	
 	
@@ -86,35 +85,7 @@ public class MakeHappy extends ConsoleApp{
 			fields = str.split("\\s+", 3);
 			setPref(fields[0], fields[1], Integer.parseInt(fields[2]));
 		}
-		
-		/*
-		// 2. Set up the campers and their preferences	
-		BufferedReader in = open("prefTableFile.txt");
-		String str;
-		String [] fields = new String[3];
-		String current = "";
-		Camper c = null;
-		while((str = in.readLine()) != null) {
-			// fields: "camper", "friend", "rating of friend"
-			fields = str.split("\\s+", 3);
-			
-			// Have we hit a new camper that we need to create?
-			if(!current.equals(fields[0])) {
-				// If this isn't the first camper we're creating, then
-				// save the current one to our list before continuing
-				if(!current.equals(""))
-					campers.add(c);
-				c = new Camper(fields[0]);
-				current = fields[0];
-			}
-			
-			// For each line, we are adding frienemies
-			c.addFrienemy(fields[1], Integer.valueOf(fields[2]));
-		}
-		campers.add(c);
-		*/
-		for(Camper camper : campers) 
-			camper.print();
+
 			
 	}
 	
@@ -287,7 +258,7 @@ public class MakeHappy extends ConsoleApp{
 		out("NOTE: ");
 		out("  It doesn't matter which order you specify the instance data files. We'll figure it out!");
 		out();
-		System.exit(1);
+		System.exit((errorMsg == null ? 1 : 0));
 	}
 
 }

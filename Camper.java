@@ -2,7 +2,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class Camper extends ConsoleApp {
+public class Camper extends Utilities {
 
 	private String name;
 	private int numPrefs = 0; // not including zero ratings

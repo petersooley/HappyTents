@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
-public class ConsoleApp {
+public class Utilities {
 	protected BufferedReader open(String file) {
 		try {
 			return new BufferedReader(new FileReader(file));
@@ -13,41 +13,6 @@ public class ConsoleApp {
 			return null;
 		}
 	}
-	
-	/*
-	protected static void out(String msg) {
-		System.out.println(msg);
-	}
-	protected void out(String msg, boolean newline) {
-		if(newline)
-			System.out.println(msg);
-		else
-			System.out.print(msg);
-	}
-	protected void out(Boolean b) {
-		System.out.println(b);
-	}
-	protected void out(Integer msg) {
-		System.out.println(String.valueOf(msg));
-	}
-	protected void out(String [] msgs) {
-		System.out.println(msgs);
-	}
-	protected void out(int [] msgs) {
-		for(int i = 0; i < msgs.length; ++i)
-			System.out.print(String.valueOf(msgs[i])+" ");
-		System.out.println();
-	}
-	
-	protected void out(char [] msgs) {
-		for(int i = 0; i < msgs.length; ++i) 
-			System.out.print(String.valueOf(msgs[i]+" "));
-		System.out.println();
-	}
-	protected void out() {
-		System.out.println();
-	}
-	*/
 	
 	protected int [] reverse(int [] array) {
 		int [] newArray = new int[array.length];
