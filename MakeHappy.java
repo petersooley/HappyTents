@@ -15,10 +15,9 @@ public class MakeHappy extends Utilities{
 	private Random rand;
 
 	public static void main(String[] args) throws IOException {
-		MakeHappy mh = new MakeHappy();
 		
+		MakeHappy mh = new MakeHappy();
 		mh.handleArgs(args);
-
 		mh.search();
 	}
 	

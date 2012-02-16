@@ -3,6 +3,7 @@
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Random;
 
 public class Utilities {
 	protected BufferedReader open(String file) {
@@ -48,5 +49,17 @@ public class Utilities {
 			err("["+file+":"+line+"] assertion error");
 			throw new AssertionError();
 		}
+	}
+	protected static void shuffle(int [] array, Random rand) {
+		for (int i = array.length - 1; i > 0; --i) {
+		  int n = rand.nextInt(i + 1); 
+		  swap(array, i, n);
+		}
+	}
+	
+	protected static void swap(int [] array, int i1, int i2) {
+		int t = array[i1];
+		array[i1] = array[i2];
+		array[i2] = t;
 	}
 }
