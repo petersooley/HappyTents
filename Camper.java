@@ -51,4 +51,10 @@ public class Camper extends Utilities {
 			out(String.format("  %-8s %d",entry.getKey().name, entry.getValue()));
 		}
 	}
+	public void printv() {
+		vout(name+": numPrefs("+numPrefs+") sumPrefs("+sumPrefs+")");
+		for(Map.Entry<Camper, Integer> entry: mates.entrySet()) {
+			vout(String.format("  %-8s %d",entry.getKey().name, entry.getValue()));
+		}
+	}
 }

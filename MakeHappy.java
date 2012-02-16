@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
@@ -13,20 +14,63 @@ public class MakeHappy extends Utilities{
 	
 	// defined in handleArgs()
 	private Random rand;
+	private boolean verbose = false;
 
 	public static void main(String[] args) throws IOException {
 		
 		MakeHappy mh = new MakeHappy();
 		mh.handleArgs(args);
-		mh.search();
+		mh.search(0,0,0,0);
 	}
 	
-	public boolean search() {
+	/*
+	 * Assumptions
+	 * 1. total tent capacity = total campers
+	 */
+	private int maxTents = tents.size();
+	
+	public int search(int curHappiness, int maxHappiness, int tIndex, int cIndex) {
+		Tent t = tents.get(tIndex);
+		Camper c = campers.get(cIndex);
+		t.addCamper(c);
+		curHappiness =+ t.happiness();
 		
-		return false;
+		// at a leaf?
+		if(t.atCapacity() && tIndex == maxTents) {
+			// have we beat the best solution so far?
+			if(curHappiness > maxHappiness) {
+				return curHappiness;
+			}
+			// our current solution sucks, backtrack for something better
+			else {
+				t.removeCamper(c);
+				//return search();
+				//...
+			}
+		}
+		else {
+			return search(curHappiness, maxHappiness, tIndex, ++cIndex);
+		}
+		
+		/*
+		 * Complete search algorithm (no heuristics)
+		 * 
+		 * Fill tent[tIndex] with camper[cIndex]
+		 * 		if tent[tIndex].isfull()
+		 * 			if tIndex == maxTents
+		 * 				happiness = getHappiness()
+		 * 				if happiness > maxHappiness
+		 * 					saveSolution()
+		 * 					maxHappiness = happiness
+		 * 			else
+		 * 				++tIndex
+		 * 		else
+		 * 			return Fill tent[tIndex] with camper[++cIndex]
+		 */
+		return 0;
 	}
 	
-	private void setupTents(String tentListFile, boolean sorted, boolean big2small) throws IOException {
+	private void setupTents(String tentListFile, boolean sorted, boolean big2small, boolean random) throws IOException {
 		ArrayList<Integer> caps = new ArrayList<Integer>();	
 		BufferedReader in = open(tentListFile);		
 		String str;
@@ -56,16 +100,19 @@ public class MakeHappy extends Utilities{
 				Arrays.sort(capacities);
 			}
 		}
+		if(random) {
+			shuffle(capacities, rand);
+		}
 		
 		for(int i = 0; i < size; ++i) {
-			out("new tent of size "+capacities[i]);
+			vout("new tent of size "+capacities[i]);
 			tents.add(new Tent(capacities[i]));
 		}
 	}
 	
 	
 	
-	private void setupCampers(String prefTableFile) throws IOException  {
+	private void setupCampers(String prefTableFile, Comparator<Camper> camperComparator, boolean random) throws IOException  {
 		BufferedReader in = open(prefTableFile);
 		String str;
 		String [] fields = new String[3];
@@ -84,11 +131,22 @@ public class MakeHappy extends Utilities{
 			fields = str.split("\\s+", 3);
 			setPref(fields[0], fields[1], Integer.parseInt(fields[2]));
 		}
-
-			
+		
+		// Third, do any kind of sorting necessary
+		if(camperComparator != null) {
+			Collections.sort(campers, camperComparator);
+		}
+		if(random) {
+			shuffle(campers, rand);
+		}
+		
+		if(verbose)
+			for(int i = 0; i < campers.size(); ++i) 
+				campers.get(i).printv();
+		
 	}
 	
-	// puke...very ineffecient. fortunately, only done once per line in prefTableFile.
+	// puke...very ineffecient. fortunately, only done once while reading prefTableFile.
 	private boolean setPref(String camper, String mate, int rating) {
 		int size = campers.size();
 		for(int i = 0; i < size; ++i) 
@@ -109,90 +167,94 @@ public class MakeHappy extends Utilities{
 	private class CamperComparePickiestFirst implements Comparator<Camper> {
 		@Override
 		public int compare(Camper c1, Camper c2) {	
-			return c1.getNumberPrefs() - c2.getNumberPrefs();
+			return c2.getNumberPrefs() - c1.getNumberPrefs();
 		}	
 	}
 	private class CamperComparePickiestLast implements Comparator<Camper> {
 		@Override
 		public int compare(Camper c1, Camper c2) {
-			return c2.getNumberPrefs() - c1.getNumberPrefs();
+			return c1.getNumberPrefs() - c2.getNumberPrefs();
 		}	
 	}
 	private class CamperCompareHighSumsFirst implements Comparator<Camper> {
 		@Override
 		public int compare(Camper c1, Camper c2) {
-			return c1.getSumPrefs() - c2.getSumPrefs();
+			return c2.getSumPrefs() - c1.getSumPrefs();
 		}	
 	}
 	private class CamperCompareHighSumsLast implements Comparator<Camper> {
 		@Override
 		public int compare(Camper c1, Camper c2) {
-			return c2.getSumPrefs() - c1.getSumPrefs();
+			return c1.getSumPrefs() - c2.getSumPrefs();
 		}	
 	}
 	
 	public void handleArgs(String args[]) throws IOException {
 		
+		long time = System.currentTimeMillis();
+		long lesstime = (time / 100000) * 100000; // fills last 5 digits with zeros
+		
+		
 		// Defaults:
-		long seed = System.currentTimeMillis();
+		int seed = (int) (time - lesstime); // using a seed with only up to 5 digits makes it easier to remember
 		String prefTableFile = "prefTable.txt";
 		String tentListFile = "tentList.txt";
 		Comparator<Camper> camperComparator = null;
 		boolean sortTents = false;
 		boolean sortTentsBig2Small = false;
+		boolean random = false;
 		
 		for(int i = 0; i < args.length; ++i) {
 			String arg = args[i];
 			int len = arg.length() - 1;
-			out("arg: "+arg);
 			
 			// filter options
 			if(arg.charAt(0) == '-') {
 				for(int j = 1; j <= len; ++j) {
 					switch(arg.charAt(j)) {
 					case 'c':
-						if(arg.charAt(j + 1) == '0') {
-							out("Sorting campers by zeros low to high...");
+						if(j + 1 <= len && arg.charAt(j + 1) == '0') {
 							camperComparator = new CamperComparePickiestLast();
 							++j;
 						}
 						else {
-							out("Sorting campers by prefs low to high...");
 							camperComparator = new CamperCompareHighSumsLast();
 						}
 						break;
 					case 'C':
-						if(arg.charAt(j + 1) == '0') {
-							out("Sorting campers by zeros high to low...");
+						if(j + 1 <= len && arg.charAt(j + 1) == '0') {
 							camperComparator = new CamperComparePickiestFirst();
 							++j;
 						}
 						else {
-							out("Sorting campers by prefs high to low...");
 							camperComparator = new CamperCompareHighSumsFirst();
 						}
 						break;
 					case 't':
 						sortTents = true;
 						sortTentsBig2Small = false;
-						out("Sorting tents smallest to biggest...");
 						break;
 					case 'T':
 						sortTents = true;
 						sortTentsBig2Small = true;
-						out("Sorting tents biggest to smallest...");
 						break;
 					case 'r':
-							out("Shuffling tents and campers...");
+							random = true;
 							if(i + 1 < args.length && args[i + 1].charAt(0) != '-' && args[i + 1].matches("[0-9]+")) {
 								try {
-									seed = Long.parseLong(args[++i]);
+									seed = Integer.parseInt(args[++i]);
 								}catch(NumberFormatException e) {
 									usage("What kind of seed is that???");
 								}
 							}
 						break;
+					case 'v':
+					case 'V':
+							setVerbose(true);
+							verbose = true;
+						break;
 					case 'h':
+					case 'H':
 							usage();
 						break;
 					default:
@@ -217,12 +279,12 @@ public class MakeHappy extends Utilities{
 			}
 		}
 
-		out("Seed: "+seed);
+		out(String.format("%-10s %s","Seed: ",seed));
+		out(String.format("%-10s %s","TentList: ", tentListFile));
+		out(String.format("%-10s %s","PreTable: ", prefTableFile));
 		rand = new Random(seed);
-		out("Tent list file: "+tentListFile);
-		setupTents(tentListFile, sortTents, sortTentsBig2Small);
-		out("Preference table file: "+prefTableFile);
-		setupCampers(prefTableFile);
+		setupTents(tentListFile, sortTents, sortTentsBig2Small, random);
+		setupCampers(prefTableFile, camperComparator, random);
 		
 	}
 	
@@ -240,12 +302,13 @@ public class MakeHappy extends Utilities{
 
 		out("MakeHappy [prefTableFile] [tentListTable]");
 		out();
-		out("This program attempts to solve the problem defined here: http://drdobbs.com/184410645.");
+		out("This program attempts to solve the problem defined here:");
+		out("	http://drdobbs.com/184410645.");
 		out("Default preference table: \"prefTable.txt\".");
 		out("Default tent list: \"tentList.txt\".");
 		out("Default ordering of tents and campers is the order in the files.");
 		out();
-		out("Optimizations:");
+		out("Options:");
 		out("  -c		order campers by preference sums lowest to highest");
 		out("  -C		order campers by preference sums highest to lowest");
 		out("  -c0		order campers by least picky to most picky");
@@ -254,8 +317,12 @@ public class MakeHappy extends Utilities{
 		out("  -T		order tents by biggest capacity to smallest");
 		out("  -r [seed]	shuffle the tents and campers");
 		out();
+		out("  -v		verbose");
+		out("  -h		help");
+		out();
 		out("NOTE: ");
-		out("  It doesn't matter which order you specify the instance data files. We'll figure it out!");
+		out("  It doesn't matter which order you specify the instance data files.");
+		out("  We'll figure it out!");
 		out();
 		System.exit((errorMsg == null ? 1 : 0));
 	}

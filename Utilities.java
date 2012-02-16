@@ -3,9 +3,13 @@
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Utilities {
+	
+	private static boolean verbose = false;
+	
 	protected BufferedReader open(String file) {
 		try {
 			return new BufferedReader(new FileReader(file));
@@ -21,6 +25,19 @@ public class Utilities {
 			newArray[i] = array[j];
 		}
 		return newArray;
+	}
+	
+	protected void vout(Object o) {
+		if(verbose) {
+			System.out.println(o);
+			System.out.flush();
+		}
+	}
+	protected void vout() {
+		if(verbose) {
+			System.out.println();
+			System.out.flush();
+		}
 	}
 	
 	protected void out(Object o) {
@@ -50,6 +67,15 @@ public class Utilities {
 			throw new AssertionError();
 		}
 	}
+	
+	protected static void shuffle(ArrayList arraylist, Random rand) {
+		int size = arraylist.size();
+		for (int i = size - 1; i > 0; --i) {
+			int n = rand.nextInt(i + 1);
+			swap(arraylist, i, n);
+		}
+	}
+	
 	protected static void shuffle(int [] array, Random rand) {
 		for (int i = array.length - 1; i > 0; --i) {
 		  int n = rand.nextInt(i + 1); 
@@ -57,9 +83,19 @@ public class Utilities {
 		}
 	}
 	
+	protected static void swap(ArrayList arraylist, int i1, int i2) {
+		Object t = arraylist.get(i1);
+		arraylist.set(i1, arraylist.get(i2));
+		arraylist.set(i2, t);
+	}
+	
 	protected static void swap(int [] array, int i1, int i2) {
 		int t = array[i1];
 		array[i1] = array[i2];
 		array[i2] = t;
+	}
+	
+	protected void setVerbose(boolean verbosity) {
+		verbose = verbosity;
 	}
 }
