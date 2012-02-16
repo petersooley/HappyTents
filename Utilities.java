@@ -98,4 +98,14 @@ public class Utilities {
 	protected void setVerbose(boolean verbosity) {
 		verbose = verbosity;
 	}
+	
+	protected Object pop(ArrayList list) {
+		return pop(list, 0);
+	}
+	
+	protected Object pop(ArrayList list, int index) {
+		Object o = list.get(index);
+		list.remove(index);
+		return o;
+	}
 }

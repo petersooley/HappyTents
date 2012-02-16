@@ -15,59 +15,46 @@ public class MakeHappy extends Utilities{
 	// defined in handleArgs()
 	private Random rand;
 	private boolean verbose = false;
+	
+	// defined by setupTents & setupCampers
+	private int maxTents;
+	private int maxCampers;
 
 	public static void main(String[] args) throws IOException {
 		
 		MakeHappy mh = new MakeHappy();
 		mh.handleArgs(args);
-		mh.search(0,0,0,0);
+		mh.doSearch();
 	}
 	
-	/*
-	 * Assumptions
-	 * 1. total tent capacity = total campers
-	 */
-	private int maxTents = tents.size();
+	public void doSearch() {
+		out();
+		int happiness = search((Tent) pop(tents), tents, campers, 0);
+		out(String.format("%-10s %s","Happiness:", happiness));
+	}
 	
-	public int search(int curHappiness, int maxHappiness, int tIndex, int cIndex) {
-		Tent t = tents.get(tIndex);
-		Camper c = campers.get(cIndex);
-		t.addCamper(c);
-		curHappiness =+ t.happiness();
+	private int search(Tent tent, ArrayList<Tent> tents, ArrayList<Camper> campers, int curHappiness) {
+		System.out.print(".");
+		System.out.flush();
+		int maxHappiness = 0;
 		
-		// at a leaf?
-		if(t.atCapacity() && tIndex == maxTents) {
-			// have we beat the best solution so far?
-			if(curHappiness > maxHappiness) {
-				return curHappiness;
-			}
-			// our current solution sucks, backtrack for something better
-			else {
-				t.removeCamper(c);
-				//return search();
-				//...
-			}
+		if(tent.atCapacity()) {
+			if(tents.size() == 0) 
+				return curHappiness;					
+			else
+				tent = (Tent) pop(tents);
 		}
-		else {
-			return search(curHappiness, maxHappiness, tIndex, ++cIndex);
+		int size = campers.size();
+		for(int i = 0; i < size; ++i) {
+			Camper c = (Camper) pop(campers, i);
+			tent.addCamper(c);
+			curHappiness =+ tent.happiness();
+			int happiness = search(tent, tents, campers, curHappiness);
+			maxHappiness = happiness > maxHappiness ? happiness : maxHappiness;
+			
 		}
 		
-		/*
-		 * Complete search algorithm (no heuristics)
-		 * 
-		 * Fill tent[tIndex] with camper[cIndex]
-		 * 		if tent[tIndex].isfull()
-		 * 			if tIndex == maxTents
-		 * 				happiness = getHappiness()
-		 * 				if happiness > maxHappiness
-		 * 					saveSolution()
-		 * 					maxHappiness = happiness
-		 * 			else
-		 * 				++tIndex
-		 * 		else
-		 * 			return Fill tent[tIndex] with camper[++cIndex]
-		 */
-		return 0;
+		return maxHappiness;
 	}
 	
 	private void setupTents(String tentListFile, boolean sorted, boolean big2small, boolean random) throws IOException {
@@ -108,6 +95,8 @@ public class MakeHappy extends Utilities{
 			vout("new tent of size "+capacities[i]);
 			tents.add(new Tent(capacities[i]));
 		}
+		
+		maxTents = tents.size();
 	}
 	
 	
@@ -144,6 +133,7 @@ public class MakeHappy extends Utilities{
 			for(int i = 0; i < campers.size(); ++i) 
 				campers.get(i).printv();
 		
+		maxCampers = campers.size();
 	}
 	
 	// puke...very ineffecient. fortunately, only done once while reading prefTableFile.
