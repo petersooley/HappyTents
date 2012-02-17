@@ -127,12 +127,6 @@ public class Utilities {
 			list.add((Tent) it.next().clone());
 		}
 	}
-	protected static void copyTentSeats(ArrayList<TentSeat> list, ArrayList<TentSeat> source)  {
-		Iterator<TentSeat> it = source.iterator();
-		while(it.hasNext()) {
-			list.add((TentSeat) it.next().clone());
-		}
-	}
 	
 	protected static int sum(int [] array) {
 		int sum = 0;
