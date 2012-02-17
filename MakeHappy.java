@@ -37,19 +37,26 @@ public class MakeHappy extends Utilities{
 		System.out.print(".");
 		System.out.flush();
 		int maxHappiness = 0;
-		
+		out("tents size: "+tents.size());
 		if(tent.atCapacity()) {
+			out("tent full");
 			if(tents.size() == 0) 
 				return curHappiness;					
 			else
 				tent = (Tent) pop(tents);
 		}
 		int size = campers.size();
+		out("campers size: "+size);
 		for(int i = 0; i < size; ++i) {
+			out("i: "+i);
 			Camper c = (Camper) pop(campers, i);
+			ArrayList<Camper> remaining = new ArrayList<Camper>();
+			copy(remaining, campers);
+			out("adding camper...");
 			tent.addCamper(c);
 			curHappiness =+ tent.happiness();
-			int happiness = search(tent, tents, campers, curHappiness);
+			out("searching...");
+			int happiness = search(tent, tents, remaining, curHappiness);
 			maxHappiness = happiness > maxHappiness ? happiness : maxHappiness;
 			
 		}

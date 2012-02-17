@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 public class Utilities {
@@ -107,5 +108,12 @@ public class Utilities {
 		Object o = list.get(index);
 		list.remove(index);
 		return o;
+	}
+	
+	protected static void copy(ArrayList<Camper> list, ArrayList<Camper> source)  {
+		Iterator<Camper> it = source.iterator();
+		while(it.hasNext()) {
+			list.add((Camper) it.next().clone());
+		}
 	}
 }

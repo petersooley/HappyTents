@@ -13,7 +13,7 @@ public class Tent {
 	}
 	
 	public boolean addCamper(Camper c) {
-		if(camperCount == capacity)
+		if(camperCount >= capacity)
 			return false;
 		return campers.add(c);
 	}

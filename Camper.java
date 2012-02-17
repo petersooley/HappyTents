@@ -57,4 +57,13 @@ public class Camper extends Utilities {
 			vout(String.format("  %-8s %d",entry.getKey().name, entry.getValue()));
 		}
 	}
+	
+	@Override
+	public Object clone() {
+		Camper c = new Camper(name);
+		for(Map.Entry<Camper, Integer> entry : mates.entrySet()) {
+			c.rateMate(entry.getKey(), entry.getValue());
+		}
+		return c;
+	}
 }
