@@ -33,11 +33,14 @@ public class Camper extends Utilities {
 		return sumPrefs;
 	}
 	
-	int getMateRating(Camper c) {
+	int getMateRating(Camper c) {	
+		for(Map.Entry<Camper, Integer> entry: mates.entrySet()) {
+			Camper mate = entry.getKey();
+			if(mate.equals(c))
+				return entry.getValue();
+		}
 		// no opinion is just plain 0 (though 0 may also be specified explicitly)
-		if(!mates.containsKey(c))
-			return 0;
-		return mates.get(c);
+		return 0;
 	}
 	
 	public boolean isName(String name) {
@@ -57,13 +60,25 @@ public class Camper extends Utilities {
 			vout(String.format("  %-8s %d",entry.getKey().name, entry.getValue()));
 		}
 	}
+	public void printv_short() {
+		vout("Camper: "+name);
+	}
+	
+	public String toString() {
+		return name;
+	}
+	
+	@Override 
+	public boolean equals(Object o) {
+		Camper c = (Camper) o;
+		return name.equals(c.name);
+	}
 	
 	@Override
 	public Object clone() {
 		Camper c = new Camper(name);
-		for(Map.Entry<Camper, Integer> entry : mates.entrySet()) {
+		for(Map.Entry<Camper, Integer> entry : mates.entrySet()) 
 			c.rateMate(entry.getKey(), entry.getValue());
-		}
 		return c;
 	}
 }

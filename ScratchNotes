@@ -68,3 +68,54 @@
 		return search(tents, campers, maxHappiness);
 	}*/
 	
+##############################################################################################
+
+	private int search(Tent tent, ArrayList<Tent> tents, ArrayList<Camper> campers, int curHappiness) {
+		System.out.print(".");
+		System.out.flush();
+		int maxHappiness = 0;
+		out("tents size: "+tents.size());
+		if(tent.atCapacity()) {
+			out("tent full");
+			if(tents.size() == 0) 
+				return curHappiness;					
+			else
+				tent = (Tent) pop(tents);
+		}
+		int size = campers.size();
+		out("campers size: "+size);
+		for(int i = 0; i < size; ++i) {
+			out("i: "+i);
+			Camper c = (Camper) pop(campers, i);
+			ArrayList<Camper> remaining = new ArrayList<Camper>();
+			copy(remaining, campers);
+			out("adding camper...");
+			tent.addCamper(c);
+			curHappiness =+ tent.happiness();
+			out("searching...");
+			int happiness = search(tent, tents, remaining, curHappiness);
+			maxHappiness = happiness > maxHappiness ? happiness : maxHappiness;
+			
+		}
+		
+		return maxHappiness;
+	}
+
+###################################################################################################################
+
+	private int search(ArrayList<TentSeat> seats, ArrayList<Camper> campers, int curHappiness) {
+		System.out.print(".");
+		System.out.flush();
+		
+	
+		if(seats.size() <= 0){
+			out("hit bottom");
+			return 1;
+		}
+		TentSeat seat = (TentSeat) pop(seats);
+		seat.print();
+		ArrayList<TentSeat> seatsLeft = new ArrayList<TentSeat>();
+		copyTentSeats(seatsLeft, seats);
+		
+		return search(seatsLeft, campers, curHappiness);
+	}

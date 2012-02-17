@@ -105,15 +105,39 @@ public class Utilities {
 	}
 	
 	protected Object pop(ArrayList list, int index) {
-		Object o = list.get(index);
-		list.remove(index);
+		Object o = null;
+		try {
+			o = list.get(index);
+			list.remove(index);
+		}catch(IndexOutOfBoundsException e) {
+			return null;
+		}
 		return o;
 	}
 	
-	protected static void copy(ArrayList<Camper> list, ArrayList<Camper> source)  {
+	protected static void copyCampers(ArrayList<Camper> list, ArrayList<Camper> source)  {
 		Iterator<Camper> it = source.iterator();
 		while(it.hasNext()) {
 			list.add((Camper) it.next().clone());
 		}
+	}
+	protected static void copyTents(ArrayList<Tent> list, ArrayList<Tent> source)  {
+		Iterator<Tent> it = source.iterator();
+		while(it.hasNext()) {
+			list.add((Tent) it.next().clone());
+		}
+	}
+	protected static void copyTentSeats(ArrayList<TentSeat> list, ArrayList<TentSeat> source)  {
+		Iterator<TentSeat> it = source.iterator();
+		while(it.hasNext()) {
+			list.add((TentSeat) it.next().clone());
+		}
+	}
+	
+	protected static int sum(int [] array) {
+		int sum = 0;
+		for(int i : array) 
+			sum += i;
+		return sum;
 	}
 }

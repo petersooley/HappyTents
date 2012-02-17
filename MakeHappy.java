@@ -28,40 +28,46 @@ public class MakeHappy extends Utilities{
 	}
 	
 	public void doSearch() {
+		int happiness = search(tents, campers, 0);
 		out();
-		int happiness = search((Tent) pop(tents), tents, campers, 0);
 		out(String.format("%-10s %s","Happiness:", happiness));
 	}
 	
-	private int search(Tent tent, ArrayList<Tent> tents, ArrayList<Camper> campers, int curHappiness) {
-		System.out.print(".");
-		System.out.flush();
-		int maxHappiness = 0;
-		out("tents size: "+tents.size());
-		if(tent.atCapacity()) {
-			out("tent full");
-			if(tents.size() == 0) 
-				return curHappiness;					
-			else
-				tent = (Tent) pop(tents);
-		}
-		int size = campers.size();
-		out("campers size: "+size);
-		for(int i = 0; i < size; ++i) {
-			out("i: "+i);
-			Camper c = (Camper) pop(campers, i);
-			ArrayList<Camper> remaining = new ArrayList<Camper>();
-			copy(remaining, campers);
-			out("adding camper...");
-			tent.addCamper(c);
-			curHappiness =+ tent.happiness();
-			out("searching...");
-			int happiness = search(tent, tents, remaining, curHappiness);
-			maxHappiness = happiness > maxHappiness ? happiness : maxHappiness;
-			
+	private int search(ArrayList<Tent> tents, ArrayList<Camper> campers, int curHappiness) {
+
+		if(tents.size() <= 0){
+			vout("hit bottom");
+			return curHappiness;
 		}
 		
-		return maxHappiness;
+		Tent t = tents.get(0);
+		t.print();
+		
+		// If this tent is full, then don't add any more children
+		// just go down the tree.
+		if(t.atCapacity()) {
+			vout("tent at capacity: "+t.happiness());
+			tents.remove(0);
+			
+			ArrayList<Tent> tentsLeft = new ArrayList<Tent>();
+			copyTents(tentsLeft, tents);
+			
+			curHappiness += t.happiness();
+			
+			return search(tentsLeft, campers, curHappiness);
+		}
+		// the tent isn't full, so just add children to the tent
+		else {
+			Camper c = campers.get(0);
+			campers.remove(0);
+			c.printv_short();
+			
+			t.addCamper(c);
+			
+			ArrayList<Camper> campersLeft = new ArrayList<Camper>();
+			copyCampers(campersLeft, campers);
+			return search(tents, campersLeft, curHappiness);
+		}
 	}
 	
 	private void setupTents(String tentListFile, boolean sorted, boolean big2small, boolean random) throws IOException {
@@ -100,9 +106,9 @@ public class MakeHappy extends Utilities{
 		
 		for(int i = 0; i < size; ++i) {
 			vout("new tent of size "+capacities[i]);
-			tents.add(new Tent(capacities[i]));
+			tents.add(new Tent(i + 1, capacities[i]));
 		}
-		
+
 		maxTents = tents.size();
 	}
 	
