@@ -24,29 +24,49 @@ public class MakeHappy extends Utilities{
 		
 		MakeHappy mh = new MakeHappy();
 		mh.handleArgs(args);
+		mh.play(true);
 		mh.doSearch();
 	}
 	
+	public void play(boolean execute){
+		if(execute) {
+			int k = 3;
+			out("n = 16, k = 3, size = 560");
+			
+			Object[][] combos = combination(campers.toArray(new Camper[campers.size()]), k);
+			for(int i = 0; i < 30; ++i) {
+				out(Arrays.toString(combos[i]));
+			}
+			out("...");
+					
+					
+					
+			System.exit(0);
+		}
+	}
+	
 	public void doSearch() {
-		int happiness = search(tents, campers, 0);
+		int happiness = search(tents, campers, 0, 0);
 		out();
 		out(String.format("%-10s %s","Happiness:", happiness));
 	}
 	
-	private int search(ArrayList<Tent> tents, ArrayList<Camper> campers, int curHappiness) {
+	private int search(ArrayList<Tent> tents, ArrayList<Camper> campers, int curHappiness, int maxHappiness) {
 
 		if(tents.size() <= 0){
 			vout("hit bottom");
-			return curHappiness;
+			if(curHappiness > maxHappiness) 
+				maxHappiness = curHappiness;
+			return maxHappiness;
 		}
 		
 		Tent t = tents.get(0);
-		t.print();
+		
 		
 		// If this tent is full, then don't add any more children
 		// just go down the tree.
 		if(t.atCapacity()) {
-			vout("tent at capacity: "+t.happiness());
+			t.print();
 			tents.remove(0);
 			
 			ArrayList<Tent> tentsLeft = new ArrayList<Tent>();
@@ -54,20 +74,86 @@ public class MakeHappy extends Utilities{
 			
 			curHappiness += t.happiness();
 			
-			return search(tentsLeft, campers, curHappiness);
+			/*
+			int happy = 0;
+			ArrayList<ArrayList<Camper>> combos;
+			combos = combination(campers);
+			for(ArrayList<Camper> list : combos) {
+				happy = search(tentsLeft, list, curHappiness, maxHappiness);
+			}*/
+			return search(tentsLeft, campers, curHappiness, maxHappiness);
 		}
 		// the tent isn't full, so just add children to the tent
 		else {
 			Camper c = campers.get(0);
 			campers.remove(0);
-			c.printv_short();
 			
 			t.addCamper(c);
 			
 			ArrayList<Camper> campersLeft = new ArrayList<Camper>();
 			copyCampers(campersLeft, campers);
-			return search(tents, campersLeft, curHappiness);
+			return search(tents, campersLeft, curHappiness, maxHappiness);
 		}
+	}
+	
+	private static Object [][] combination(Object [] n, int k) {
+		int size = combinationsPossible(n.length, k);
+		Object [][] combos = new Object[size][k];
+		int [] index = new int[k];
+		
+		// start with index[] -> {0,1,2,...,k}
+		for(int a = 0; a < k; ++a) {
+			index[a] = a;
+		}
+		
+		for(int b = 0; b < size; ++b) {
+			for(int c = 0; c < k; ++c) {
+				// save the combo
+				combos[b][c] = n[index[c]];
+			}
+			// adjust the indices
+			for(int d = k; d > 0; --d) {
+				if((index[d] + 1) == n.length && (index[d - 1] + 2) < n.length) {
+					index[d] = index[d - 1] + 2;
+					continue;
+				}
+				++index[d];
+				break;
+			}
+		}
+		
+		return combos;
+	}
+	
+	/*
+	if((index[d] + 1) == n.length || (index[d] + 1) == index[d + 1]) {
+		index[d] = index[d - 1] + 2;
+		++index[d - 1];
+		break;
+	}
+	index[d]++;
+*/
+	private static int combinationsPossible(int n, int k) {
+		int m = n - k;
+		int o, p;
+		if(m > k) {
+			o = m;
+			p = k;
+		}
+		else {
+			p = m;
+			o = k;
+		}
+		/*     n!
+		 *    ----
+		 *    o!p!  where o > p
+		 */
+		int top = 1, bottom = 1;
+		for(int i = n; i > o; --i) 
+			top *= i;
+		for(int j = p; j > 1; --j)
+			bottom *= j;	
+		return top / bottom;
 	}
 	
 	private void setupTents(String tentListFile, boolean sorted, boolean big2small, boolean random) throws IOException {
