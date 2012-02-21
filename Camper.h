@@ -5,8 +5,6 @@
 #include <iostream>
 #include <stdlib.h>
 
-#define MAX_CAMPERS		16
-
 using namespace peter;
 
 class PrefNode;

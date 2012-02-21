@@ -3,8 +3,6 @@
 #include <stdlib.h>
 
 Tent::Tent() {
-	std::cerr << "Oops, default Tent constructor not supported.\n";
-	exit(1);
 }
 
 Tent::Tent(int limit) : capacity(0),camperCount(0) {
@@ -13,14 +11,14 @@ Tent::Tent(int limit) : capacity(0),camperCount(0) {
 }
 
 Tent::~Tent() {
-	for(int i = 0; i < capacity; ++i)
-		delete campers[i];
+	delete [] campers;
 }
 
 int Tent::addCamper(Camper& c) {
 	if(camperCount == capacity)
 		return -1;
-	campers[camperCount++] = &c;
+	campers[camperCount++] = c;
+	return 0;
 }
 
 int Tent::isFull() {
@@ -32,5 +30,10 @@ int Tent::isFull() {
 int Tent::getHappiness() {
 	int happy = 0;
 	
-	// TODO !!!!
+	for(int i = 0; i < camperCount; ++i) 
+		for(int j = 0; j < camperCount; ++j) 
+			if(i != j)
+				happy += campers[i].getPref(campers[j]);
+	return happy;
 }
+

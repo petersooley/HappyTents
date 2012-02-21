@@ -3,8 +3,6 @@ using namespace std;
 using namespace peter;
 
 Camper::Camper() {
-	cerr << "oops, wrong constructor used.\n";
-	exit(1);
 }
 
 Camper::Camper(String new_name): head(NULL) {
