@@ -1,11 +1,10 @@
 #include "Camper.h"
 using namespace std;
-using namespace peter;
 
 Camper::Camper() {
 }
 
-Camper::Camper(String new_name): head(NULL) {
+Camper::Camper(string new_name): head(NULL) {
 	name = new_name;
 }
 

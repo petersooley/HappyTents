@@ -1,11 +1,11 @@
 #ifndef _CAMPER_H__
 #define _CAMPER_H__
 
-#include "String.h"
+#include <string>
 #include <iostream>
 #include <stdlib.h>
 
-using namespace peter;
+using namespace std;
 
 class PrefNode;
 
@@ -16,7 +16,7 @@ class Camper {
 		Camper();
 
 		// Constructor
-		Camper(String name);
+		Camper(string name);
 		
 		// Destructor
 		~Camper();
@@ -31,7 +31,7 @@ class Camper {
 
 
 	private:
-		String name;
+		string name;
 		PrefNode * head;
 };
 
