@@ -7,7 +7,7 @@
 using namespace std;
 
 
-MakeHappy::MakeHappy() : campers(NULL),camperCount(0),tents(NULL){
+MakeHappy::MakeHappy() : campers(NULL),camperCount(0),tents(NULL),tentCount(0){
 }
 
 MakeHappy::~MakeHappy() {
@@ -32,12 +32,13 @@ void MakeHappy::setupPrefsTable(const string filename, int size) {
 		prefs >> mate; // ignored for now
 		prefs >> pref; // ignored for now
 		if(camper != previous) {
-			cout << "adding " << camper << endl;
-			campers[camperCount++] = Camper(camper);
+			campers[camperCount++].set(camper);
 		} 
 		previous = camper;
 	}
 
+	prefs.close();
+	prefs.open(filename.c_str());
 	// Second, set up the ratings
 	while(prefs.good()) {
 		prefs >> camper;
@@ -55,14 +56,46 @@ void MakeHappy::setupPrefsTable(const string filename, int size) {
 			}
 		}
 	}
+	prefs.close();
+}
 
+void MakeHappy::setupTents(string filename, int size) {
+	tents = new Tent[size];
+
+	ifstream tentList(filename.c_str());
+	string cap;
+	int capacity = 0;
+	tentCount = 0;
+
+	while(tentList.good()) {
+		tentList >> cap;
+		capacity = atoi(cap.c_str());
+
+		tents[tentCount++].set(capacity, tentCount);
+	}
+	tentList.close();
+
+}
+
+int MakeHappy::search(int camperIndex) {
+	if(camperIndex == camperCount)
+		return 0;
+	campers[camperIndex++].print();
+	cout << endl;
+	return search(camperIndex);
 }
 
 int main(void) {
 
 	MakeHappy mh;
 	int max_campers = 16;
+	int max_tents = 5;
 	mh.setupPrefsTable("prefTable.txt", max_campers);
+	mh.setupTents("tentList.txt", max_tents);
+	//mh.search(0);
 
+
+
+	cout << "done." << endl;
 	return 0;
 }

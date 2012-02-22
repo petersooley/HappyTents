@@ -15,5 +15,7 @@ Camper.o: Camper.cpp
 Tent.o: Tent.cpp 
 	$(CC) $(CFLAGS) Tent.cpp Tent.h
 
+all: MakeHappy
+
 clean:
-	rm -f MakeHappy *.o
+	rm -f MakeHappy *.o *.gch

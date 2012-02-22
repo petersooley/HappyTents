@@ -6,14 +6,13 @@
 
 class Tent {
 	public:
-		// Constructor -- do not use
-		Tent();
-
 		// Constructor
-		Tent(int limit);
+		Tent();
 
 		// Destructor
 		~Tent();
+
+		void set(int limit, int id);
 
 		// Add a camper, -1 if tent is full
 		int addCamper(Camper& c);
@@ -24,10 +23,17 @@ class Tent {
 		// Total happiness of all campers
 		int getHappiness();
 
+		void print();
+
+
 	private:
 		int capacity;
 		int camperCount;
-		Camper * campers;
+		int ID;
+
+		// The tent doesn't house campers, just pointers
+		// to campers.
+		Camper ** campers;
 	
 };
 

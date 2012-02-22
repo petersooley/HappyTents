@@ -12,14 +12,22 @@ class PrefNode;
 class Camper {
 	public:
 
-		// Constructor -- do not use
+		// Constructor
 		Camper();
 
-		// Constructor
+		// shallow copy constructor
 		Camper(string name);
-		
+
+		// deep copy constructor
+		Camper(Camper& copy);
+
+		// deep copy operator
+		Camper& operator = (const Camper& right);
+
 		// Destructor
 		~Camper();
+
+		void set(string name);
 
 		// Get this camper's preference of the given camper 
 		int getPref(Camper& mateName);
@@ -32,6 +40,7 @@ class Camper {
 		// No significant return value, currently.
 		int addPref(Camper& mateName, int rating);
 
+		void print();
 
 	private:
 		string name;

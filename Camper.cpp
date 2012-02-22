@@ -1,11 +1,39 @@
 #include "Camper.h"
 using namespace std;
 
-Camper::Camper() {
+Camper::Camper(): head(NULL) {
 }
 
-Camper::Camper(string new_name): head(NULL) {
-	name = new_name;
+Camper::Camper(string newname) {
+	name = newname;
+}
+
+Camper::Camper(Camper& copy) {
+	name = copy.name;
+	PrefNode * current = copy.head;
+	while(current) {
+		addPref(*current->mate, current->rating);
+		current = current->next;
+	}
+}
+
+Camper& Camper::operator = (const Camper& x) {
+	if(this == &x)
+		return *this;
+	PrefNode * grave;
+	while(head) {
+		grave = head;
+		head = head->next;
+		delete grave;
+	}
+	head = NULL;
+	PrefNode * current = x.head;
+	while(current) {
+		addPref(*current->mate, current->rating);
+		current = current->next;
+	}
+	name = x.name;
+	return *this;
 }
 
 Camper::~Camper() {
@@ -15,6 +43,10 @@ Camper::~Camper() {
 		head = head->next;
 		delete grave;
 	}
+}
+
+void Camper::set(string newname) {
+	name = newname;
 }
 
 int Camper::getPref(Camper& mate) {
@@ -39,8 +71,21 @@ int Camper::addPref(Camper& mate, int rating) {
 		return 0;
 	PrefNode * temp = head;
 	head = new PrefNode();
-	head->mate = &mate;
+	head->mate = new Camper(mate.name); // shallow copy is fine
 	head->rating = rating;
 	head->next = temp;
 	return 0;
+}
+
+void Camper::print() {
+	cout << name;
+	/*
+	cout << ": ";
+	PrefNode * current = head;
+	while(current) {
+		cout << current->mate->name << " ";
+		current = current->next;
+	}
+	cout << endl;
+	*/
 }

@@ -2,22 +2,24 @@
 #include <iostream>
 #include <stdlib.h>
 
-Tent::Tent() {
-}
-
-Tent::Tent(int limit) : capacity(0),camperCount(0) {
-	capacity = limit;
-	campers = new Camper[capacity];	
+Tent::Tent() : capacity(0), camperCount(0), ID(0) {
 }
 
 Tent::~Tent() {
 	delete [] campers;
 }
 
+void Tent::set(int limit, int id) {
+	capacity = limit;
+	ID = id;
+	campers = new Camper * [capacity];
+}
+
+
 int Tent::addCamper(Camper& c) {
 	if(camperCount == capacity)
 		return -1;
-	campers[camperCount++] = c;
+	campers[camperCount++] = &c;
 	return 0;
 }
 
@@ -33,7 +35,16 @@ int Tent::getHappiness() {
 	for(int i = 0; i < camperCount; ++i) 
 		for(int j = 0; j < camperCount; ++j) 
 			if(i != j)
-				happy += campers[i].getPref(campers[j]);
+				happy += campers[i]->getPref(*campers[j]);
 	return happy;
+}
+
+void Tent::print() {
+	cout << "Tent " << ID << " -> ";
+	for(int i = 0; i < camperCount; ++i) {
+		campers[i]->print();
+		cout << " ";
+	}
+	cout << endl;
 }
 

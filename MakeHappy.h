@@ -11,11 +11,15 @@ class MakeHappy {
 		~MakeHappy();
 
 		void setupPrefsTable(string filename, int size);
+		void setupTents(string filename, int size);
 		
+		int search(int camperIndex);
+
 	private:
 		Camper * campers;
 		int camperCount;
 		Tent * tents;
+		int tentCount;
 
 };
 
