@@ -28,6 +28,12 @@ int Camper::getPref(Camper& mate) {
 	return 0;
 }
 
+int Camper::isName(string namecheck) {
+	if(name == namecheck)
+		return 1;
+	return 0;
+}
+
 int Camper::addPref(Camper& mate, int rating) {
 	if(!rating)
 		return 0;

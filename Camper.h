@@ -24,6 +24,9 @@ class Camper {
 		// Get this camper's preference of the given camper 
 		int getPref(Camper& mateName);
 
+		// 1 if match, 0 if not
+		int isName(string name);
+
 		// Add a preference to this camper. Duplicates
 		// are not checked.
 		// No significant return value, currently.
