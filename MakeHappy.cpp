@@ -4,7 +4,7 @@
 #include "Camper.h"
 #include "Tent.h"
 #include "MakeHappy.h"
-#include "Range.h";
+#include "Range.h"
 using namespace std;
 
 
@@ -78,9 +78,9 @@ void MakeHappy::setupTents(string filename, int size) {
 
 }
 int MakeHappy::search(Range& range, int tentIndex, int curHappiness) {
-
 	// return the happiness once we hit the bottom of the tree
-	if(tentIndex == tentCount - 1) {
+	if(tentIndex == tentCount) {
+		cout << "hit bottom: " << curHappiness << endl;
 		return curHappiness;
 	}
 
@@ -107,6 +107,8 @@ int MakeHappy::search(Range& range, int tentIndex, int curHappiness) {
 		for(int j = 0; j < capacity; ++j) {
 			t->addCamper(campers[combos[i][j]]);
 		}
+
+		t->print();
 
 		range.setAside(combos[i], capacity);
 		newHappiness = t->getHappiness() + curHappiness;
