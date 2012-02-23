@@ -4,7 +4,7 @@ using namespace std;
 Camper::Camper(): head(NULL) {
 }
 
-Camper::Camper(string newname) {
+Camper::Camper(string newname): head(NULL) {
 	name = newname;
 }
 

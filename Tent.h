@@ -17,6 +17,8 @@ class Tent {
 		// Add a camper, -1 if tent is full
 		int addCamper(Camper& c);
 
+		int removeCamper(Camper& c);
+
 		// 1 if full, 0 if room still available
 		int isFull();
 

@@ -1,0 +1,14 @@
+alan      bob       2
+alan      carol     1
+alan      felicia   0
+bob       dave      7
+bob       alan      4
+carol     dave      11
+carol     alan      2
+dave      bob       3
+dave      felicia   1
+felicia   alan      4
+felicia   bob       7
+felicia   dave      3
+felicia   carol     11
+

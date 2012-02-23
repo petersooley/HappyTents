@@ -23,6 +23,18 @@ int Tent::addCamper(Camper& c) {
 	return 0;
 }
 
+int Tent::removeCamper(Camper& c) {
+	for(int i = 0; i < camperCount; ++i){
+		if(campers[i] == &c) {
+			for(int j = i; j < camperCount - 1; ++j) {
+				campers[j] = campers[j+1];
+			}
+		}
+	}
+	--camperCount;
+	return 0;
+}
+
 int Tent::isFull() {
 	if(camperCount == capacity)
 		return 1;

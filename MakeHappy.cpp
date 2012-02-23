@@ -80,8 +80,9 @@ void MakeHappy::setupTents(string filename, int size) {
 int MakeHappy::search(Range& range, int tentIndex, int curHappiness) {
 
 	// return the happiness once we hit the bottom of the tree
-	if(tentIndex == tentCount)
+	if(tentIndex == tentCount - 1) {
 		return curHappiness;
+	}
 
 	int ** combos;
 	int comboCount;
@@ -115,7 +116,7 @@ int MakeHappy::search(Range& range, int tentIndex, int curHappiness) {
 			maxHappiness = happiness;
 
 		for(int k = 0; k < capacity; ++k) {
-			//t->removeCamper(campers[combos[i][j]]);
+			t->removeCamper(campers[combos[i][k]]);
 		}
 		range.replace();
 	}
@@ -229,12 +230,11 @@ void MakeHappy::doSearch() {
 
 int main(void) {
 
-
 	MakeHappy mh;
 	int max_campers = 16;
 	int max_tents = 5;
-	mh.setupPrefsTable("prefTable.txt", max_campers);
-	mh.setupTents("tentList.txt", max_tents);
+	mh.setupPrefsTable("easyPrefTable.txt", max_campers);
+	mh.setupTents("easyTentList.txt", max_tents);
 	mh.doSearch();
 
 
