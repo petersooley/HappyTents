@@ -4,6 +4,7 @@
 #include "Camper.h"
 #include "Tent.h"
 #include "MakeHappy.h"
+#include "Range.h";
 using namespace std;
 
 
@@ -76,14 +77,51 @@ void MakeHappy::setupTents(string filename, int size) {
 	tentList.close();
 
 }
+int MakeHappy::search(Range& range, int tentIndex, int curHappiness) {
 
-int MakeHappy::search(int camperIndex) {
-	if(camperIndex == camperCount)
-		return 0;
-	campers[camperIndex++].print();
-	cout << endl;
-	return search(camperIndex);
+	// return the happiness once we hit the bottom of the tree
+	if(tentIndex == tentCount)
+		return curHappiness;
 
+	int ** combos;
+	int comboCount;
+	int capacity;
+	int newHappiness;
+	int happiness = 0;
+	int maxHappiness = 0;
+
+	// grab the current tent
+	Tent * t = &tents[tentIndex++];
+	capacity = t->getCapacity();
+
+	// figure out all possible combinations of campers in this tent
+	int rangeSize;
+	int * array = range.createArray(rangeSize);
+	combos = combinations(array, rangeSize, capacity, comboCount);
+
+	// fill this tent with each combo and calculate how much
+	// happiness we can get.
+	for(int i = 0; i < comboCount; ++i) {
+
+		for(int j = 0; j < capacity; ++j) {
+			t->addCamper(campers[combos[i][j]]);
+		}
+
+		range.setAside(combos[i], capacity);
+		newHappiness = t->getHappiness() + curHappiness;
+
+		happiness = search(range, tentIndex, newHappiness);
+		if(happiness > maxHappiness)
+			maxHappiness = happiness;
+
+		for(int k = 0; k < capacity; ++k) {
+			//t->removeCamper(campers[combos[i][j]]);
+		}
+		range.replace();
+	}
+
+	freeCombinations(combos, comboCount);
+	return maxHappiness;
 }
 
 int** MakeHappy::combinations(const int n[], const int n_length, const int r, int& size) {
@@ -98,12 +136,13 @@ int** MakeHappy::combinations(const int n[], const int n_length, const int r, in
 
 	for(int b = 0; b < size; ++b) {
 
+		// allocate and assign values
 		combos[b] = new int[r];
  		for(int c = 0; c < r; ++c)
 			combos[b][c] = n[index[c]];
 
 
-		// adjust the indices
+		// adjust the indices for the next iteration
 		for(int d = r - 1; d >= 0; --d) {
 
 			// If the current index has reached the end or hit our upper neighbor index...
@@ -124,9 +163,7 @@ int** MakeHappy::combinations(const int n[], const int n_length, const int r, in
 				}
 				++index[d - 1];
 				break;
-
 			}
-
 			++index[d];
 			break;
 		}
@@ -182,15 +219,23 @@ int MakeHappy::combinationsPossible(const int n, const int r) {
 	return top / bottom;
 }
 
+void MakeHappy::doSearch() {
+	Range range(camperCount);
+	int happy;
+	happy = search(range, 0, 0);
+	cout << "Happiness: " << happy << endl;
+}
+
 
 int main(void) {
+
 
 	MakeHappy mh;
 	int max_campers = 16;
 	int max_tents = 5;
 	mh.setupPrefsTable("prefTable.txt", max_campers);
 	mh.setupTents("tentList.txt", max_tents);
-	mh.testCombinations();
+	mh.doSearch();
 
 
 

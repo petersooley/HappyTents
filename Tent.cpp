@@ -39,6 +39,7 @@ int Tent::getHappiness() {
 	return happy;
 }
 
+
 void Tent::print() {
 	cout << "Tent " << ID << " -> ";
 	for(int i = 0; i < camperCount; ++i) {
@@ -46,5 +47,9 @@ void Tent::print() {
 		cout << " ";
 	}
 	cout << endl;
+}
+
+int Tent::getCapacity() {
+	return capacity;
 }
 

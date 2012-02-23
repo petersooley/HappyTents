@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -g -Wall -c
 
-OBJS = MakeHappy.o Camper.o Tent.o
+OBJS = MakeHappy.o Camper.o Tent.o Range.o
 
 MakeHappy: $(OBJS)
 	$(CC) -o MakeHappy $(OBJS)
@@ -14,6 +14,9 @@ Camper.o: Camper.cpp
 
 Tent.o: Tent.cpp 
 	$(CC) $(CFLAGS) Tent.cpp Tent.h
+
+Range.o: Range.cpp
+	$(CC) $(CFLAGS) Range.cpp Range.h
 
 all: MakeHappy
 

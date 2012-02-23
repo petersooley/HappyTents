@@ -7,7 +7,7 @@
 
 using namespace std;
 
-class PrefNode;
+struct PrefNode;
 
 class Camper {
 	public:
@@ -47,8 +47,7 @@ class Camper {
 		PrefNode * head;
 };
 
-class PrefNode {
-	public:
+struct PrefNode {
 		Camper * mate;
 		int rating;
 		PrefNode * next;

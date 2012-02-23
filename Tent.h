@@ -25,6 +25,8 @@ class Tent {
 
 		void print();
 
+		int getCapacity();
+
 
 	private:
 		int capacity;
