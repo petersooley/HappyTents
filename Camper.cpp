@@ -78,15 +78,6 @@ int Camper::addPref(Camper& mate, int rating) {
 	return 0;
 }
 
-void Camper::print() {
-	cout << name;
-	/*
-	cout << ": ";
-	PrefNode * current = head;
-	while(current) {
-		cout << current->mate->name << " ";
-		current = current->next;
-	}
-	cout << endl;
-	*/
+string Camper::toString() {
+	return name;
 }

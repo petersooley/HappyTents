@@ -40,7 +40,7 @@ class Camper {
 		// No significant return value, currently.
 		int addPref(Camper& mateName, int rating);
 
-		void print();
+		string toString();
 
 	private:
 		string name;

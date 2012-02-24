@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sstream>
+#include <string>
 #include "Camper.h"
 #include "Tent.h"
 #include "MakeHappy.h"
@@ -116,35 +118,37 @@ int MakeHappy::search(Range& range, int tentIndex, int curHappiness) {
 	// happiness we can get.
 	for(int i = 0; i < comboCount; ++i) {
 
+		// for your viewing pleasure...
 		if(++stateCount % 500000 == 0) {
 			cout << ".";
 			cout.flush();
 		}
-		if(stateCount == 504504000){
-			cout << "\n**************************oops**************************\n";
-			cout.flush();
-		}
-		for(int j = 0; j < capacity; ++j) {
+
+		// Prepare the search
+		for(int j = 0; j < capacity; ++j)
 			t->addCamper(campers[combos[i][j]]);
-		}
-
-		//t->print();
-
 		range.setAside(combos[i], capacity, tentIndex);
 		newHappiness = t->getHappiness() + curHappiness;
 
+		// Search...
 		happiness = search(range, tentIndex, newHappiness);
-		if(happiness > maxHappiness)
-			maxHappiness = happiness;
 
-		for(int k = 0; k < capacity; ++k) {
-			t->removeCamper(campers[combos[i][k]]);
+		// If this was the best search we've gotten so far, save it.
+		if(happiness > maxHappiness) {
+			maxHappiness = happiness;
+			saveTents();
 		}
+
+		// Clean up from the search, so the next iteration can
+		// start fresh
+		for(int k = 0; k < capacity; ++k)
+			t->removeCamper(campers[combos[i][k]]);
 		range.replace(tentIndex);
 	}
 
 	range.freeArray(array);
 	freeCombinations(combos, comboCount);
+
 	return maxHappiness;
 }
 
@@ -198,23 +202,6 @@ int** MakeHappy::combinations(const int n[], const int n_length, const int r, in
 	return combos;
 }
 
-void MakeHappy::testCombinations() {
-	int ** combos;
-	int size;
-	int range[camperCount];
-	for(int i = 0; i < camperCount; ++i)
-		range[i] = i;
-	combos = combinations(range, camperCount, 3, size);
-	cout << "got combos" << endl;
-	for(int i = 0; i < size; ++i) {
-		for(int j = 0; j < 3; ++j) {
-			cout << combos[i][j] << " ";
-		}
-		cout << endl;
-	}
-	cout << "freeing combos" << endl;
-	freeCombinations(combos, size);
-}
 
 void MakeHappy::freeCombinations(int** combos, const int length) {
 	for(int i = 0; i < length; ++i)
@@ -250,6 +237,15 @@ void MakeHappy::doSearch() {
 	int happy;
 	happy = search(range, 0, 0);
 	cout << "Happiness: " << happy << endl;
+	cout << finalArrangement;
+}
+
+
+void MakeHappy::saveTents() {
+	ostringstream out;
+	for(int i = 0; i < tentCount; ++i)
+		out << tents[i].toString();
+	finalArrangement = out.str();
 }
 
 

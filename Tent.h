@@ -3,6 +3,8 @@
 
 #include "Camper.h"
 #include <iostream>
+#include <string>
+using namespace std;
 
 class Tent {
 	public:
@@ -25,7 +27,7 @@ class Tent {
 		// Total happiness of all campers
 		int getHappiness();
 
-		void print();
+		string toString();
 
 		int getCapacity();
 

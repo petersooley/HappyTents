@@ -1,6 +1,9 @@
 #include "Tent.h"
 #include <iostream>
 #include <stdlib.h>
+#include <sstream>
+#include <string>
+using namespace std;
 
 Tent::Tent() : capacity(0), camperCount(0), ID(0) {
 }
@@ -52,13 +55,13 @@ int Tent::getHappiness() {
 }
 
 
-void Tent::print() {
-	cout << "Tent " << ID << " -> ";
-	for(int i = 0; i < camperCount; ++i) {
-		campers[i]->print();
-		cout << " ";
-	}
-	cout << endl;
+string Tent::toString() {
+	ostringstream out;
+	out << "Tent " << ID << " -> ";
+	for(int i = 0; i < camperCount; ++i)
+		out << campers[i]->toString() << " ";
+	out << "\n";
+	return out.str();
 }
 
 int Tent::getCapacity() {
