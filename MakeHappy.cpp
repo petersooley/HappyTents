@@ -116,12 +116,12 @@ int MakeHappy::search(Range& range, int tentIndex, int curHappiness) {
 	// happiness we can get.
 	for(int i = 0; i < comboCount; ++i) {
 
-		if(++stateCount % 50000 == 0) {
+		if(++stateCount % 500000 == 0) {
 			cout << ".";
 			cout.flush();
 		}
-		if(stateCount > 504504000){
-			cout << "oops";
+		if(stateCount == 504504000){
+			cout << "\n**************************oops**************************\n";
 			cout.flush();
 		}
 		for(int j = 0; j < capacity; ++j) {
@@ -143,6 +143,7 @@ int MakeHappy::search(Range& range, int tentIndex, int curHappiness) {
 		range.replace(tentIndex);
 	}
 
+	range.freeArray(array);
 	freeCombinations(combos, comboCount);
 	return maxHappiness;
 }
@@ -191,6 +192,8 @@ int** MakeHappy::combinations(const int n[], const int n_length, const int r, in
 			break;
 		}
 	}
+
+	delete [] index;
 
 	return combos;
 }

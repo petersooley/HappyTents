@@ -23,6 +23,7 @@ Camper& Camper::operator = (const Camper& x) {
 	PrefNode * grave;
 	while(head) {
 		grave = head;
+		delete head->mate;
 		head = head->next;
 		delete grave;
 	}
