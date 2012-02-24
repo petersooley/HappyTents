@@ -10,8 +10,8 @@ class MakeHappy {
 	public:
 		MakeHappy();
 		~MakeHappy();
-		void setupPrefsTable(string filename, int size);
-		void setupTents(string filename, int size);
+		int setupPrefsTable(string filename, int size);
+		int setupTents(string filename, int size);
 		void doSearch();
 		// to be deleted...
 		void testCombinations();

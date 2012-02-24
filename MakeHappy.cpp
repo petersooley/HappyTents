@@ -17,9 +17,13 @@ MakeHappy::~MakeHappy() {
 }
 
 
-void MakeHappy::setupPrefsTable(const string filename, int size) {
+int MakeHappy::setupPrefsTable(const string filename, int size) {
 	campers = new Camper[size];
 	ifstream prefs(filename.c_str());
+	if(prefs.fail()) {
+		cerr << "Oops, could not open " << filename << endl;
+		return 0;
+	}
 	string camper;
 	string mate;
 	string pref;
@@ -58,12 +62,17 @@ void MakeHappy::setupPrefsTable(const string filename, int size) {
 		}
 	}
 	prefs.close();
+	return 1;
 }
 
-void MakeHappy::setupTents(string filename, int size) {
+int MakeHappy::setupTents(string filename, int size) {
 	tents = new Tent[size];
 
 	ifstream tentList(filename.c_str());
+	if(tentList.fail()) {
+		cerr << "Oops, could not open " << filename << endl;
+		return 0;
+	}
 	string cap;
 	int capacity = 0;
 	tentCount = 0;
@@ -75,12 +84,15 @@ void MakeHappy::setupTents(string filename, int size) {
 		tents[tentCount++].set(capacity, tentCount);
 	}
 	tentList.close();
-
+	return 1;
 }
+
+static unsigned int stateCount = 0;
+
 int MakeHappy::search(Range& range, int tentIndex, int curHappiness) {
 	// return the happiness once we hit the bottom of the tree
 	if(tentIndex == tentCount) {
-		cout << "hit bottom: " << curHappiness << endl;
+		//cout << "hit bottom: " << curHappiness << endl;
 		return curHappiness;
 	}
 
@@ -104,13 +116,21 @@ int MakeHappy::search(Range& range, int tentIndex, int curHappiness) {
 	// happiness we can get.
 	for(int i = 0; i < comboCount; ++i) {
 
+		if(++stateCount % 50000 == 0) {
+			cout << ".";
+			cout.flush();
+		}
+		if(stateCount > 504504000){
+			cout << "oops";
+			cout.flush();
+		}
 		for(int j = 0; j < capacity; ++j) {
 			t->addCamper(campers[combos[i][j]]);
 		}
 
-		t->print();
+		//t->print();
 
-		range.setAside(combos[i], capacity);
+		range.setAside(combos[i], capacity, tentIndex);
 		newHappiness = t->getHappiness() + curHappiness;
 
 		happiness = search(range, tentIndex, newHappiness);
@@ -120,7 +140,7 @@ int MakeHappy::search(Range& range, int tentIndex, int curHappiness) {
 		for(int k = 0; k < capacity; ++k) {
 			t->removeCamper(campers[combos[i][k]]);
 		}
-		range.replace();
+		range.replace(tentIndex);
 	}
 
 	freeCombinations(combos, comboCount);
@@ -235,8 +255,10 @@ int main(void) {
 	MakeHappy mh;
 	int max_campers = 16;
 	int max_tents = 5;
-	mh.setupPrefsTable("easyPrefTable.txt", max_campers);
-	mh.setupTents("easyTentList.txt", max_tents);
+	if(!mh.setupPrefsTable("prefTable.txt", max_campers))
+		return 1;
+	if(!mh.setupTents("tentList.txt", max_tents))
+		return 1;
 	mh.doSearch();
 
 

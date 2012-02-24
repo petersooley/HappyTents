@@ -4,6 +4,7 @@
 struct RangeNode {
 	int data;
 	int setAside; // 1 if true, 0 if false
+	int setAsideLabel;
 	RangeNode * next;
 };
 
@@ -15,8 +16,8 @@ class Range {
 
 		int * createArray(int& size);
 		void freeArray(int * array);
-		void setAside(const int nums_to_remove [], const int length);
-		void replace();
+		void setAside(const int nums_to_remove [], const int length, const int label);
+		void replace(const int label);
 
 	private:
 		RangeNode * head;

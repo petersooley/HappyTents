@@ -47,7 +47,7 @@ void Range::freeArray(int * array) {
 	delete [] array;
 }
 
-void Range::setAside(const int nums[], const int length) {
+void Range::setAside(const int nums[], const int length, const int label) {
 	if(!head)
 		return;
 
@@ -56,6 +56,7 @@ void Range::setAside(const int nums[], const int length) {
 		for(int j = 0; j < length; ++j) {
 			if(current->data == nums[j]) {
 				current->setAside = 1;
+				current->setAsideLabel = label;
 				--count;
 				break;
 			}
@@ -64,10 +65,10 @@ void Range::setAside(const int nums[], const int length) {
 	}
 }
 
-void Range::replace() {
+void Range::replace(const int label) {
 	RangeNode * current = head;
 	while(current) {
-		if(current->setAside) {
+		if(current->setAsideLabel == label) {
 			current->setAside = 0;
 			++count;
 		}
