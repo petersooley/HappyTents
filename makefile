@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -g -Wall -c -O2
+CFLAGS = -g -Wall -c -O2 
 
 OBJS = MakeHappy.o Camper.o Tent.o Range.o
 

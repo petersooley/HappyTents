@@ -94,7 +94,6 @@ static unsigned int stateCount = 0;
 int MakeHappy::search(Range& range, int tentIndex, int curHappiness) {
 	// return the happiness once we hit the bottom of the tree
 	if(tentIndex == tentCount) {
-		//cout << "hit bottom: " << curHappiness << endl;
 		return curHappiness;
 	}
 
@@ -136,7 +135,9 @@ int MakeHappy::search(Range& range, int tentIndex, int curHappiness) {
 		// If this was the best search we've gotten so far, save it.
 		if(happiness > maxHappiness) {
 			maxHappiness = happiness;
-			saveTents();
+
+			if(tentIndex == (tentCount - 1))
+				saveTents();
 		}
 
 		// Clean up from the search, so the next iteration can
