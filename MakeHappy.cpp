@@ -10,7 +10,7 @@
 using namespace std;
 
 
-MakeHappy::MakeHappy() : campers(NULL),camperCount(0),tents(NULL),tentCount(0){
+MakeHappy::MakeHappy() : campers(NULL),camperCount(0),tents(NULL),tentCount(0), head(NULL){
 }
 
 MakeHappy::~MakeHappy() {
