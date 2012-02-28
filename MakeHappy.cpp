@@ -16,6 +16,13 @@ MakeHappy::MakeHappy() : campers(NULL),camperCount(0),tents(NULL),tentCount(0){
 MakeHappy::~MakeHappy() {
 	delete [] campers;
 	delete [] tents;
+
+	SaveNode * grave;
+	while(head) {
+		grave = head;
+		head = head->next;
+		delete grave;
+	}
 }
 
 
@@ -91,7 +98,7 @@ int MakeHappy::setupTents(string filename, int size) {
 
 static unsigned int stateCount = 0;
 
-int MakeHappy::search(Range& range, int tentIndex, int curHappiness) {
+int MakeHappy::search(Range& range, int tentIndex, int curHappiness, int& maxHappiness) {
 	// return the happiness once we hit the bottom of the tree
 	if(tentIndex == tentCount) {
 		return curHappiness;
@@ -102,7 +109,6 @@ int MakeHappy::search(Range& range, int tentIndex, int curHappiness) {
 	int capacity;
 	int newHappiness;
 	int happiness = 0;
-	int maxHappiness = 0;
 
 	// grab the current tent
 	Tent * t = &tents[tentIndex++];
@@ -130,14 +136,19 @@ int MakeHappy::search(Range& range, int tentIndex, int curHappiness) {
 		newHappiness = t->getHappiness() + curHappiness;
 
 		// Search...
-		happiness = search(range, tentIndex, newHappiness);
+		happiness = search(range, tentIndex, newHappiness, maxHappiness);
 
 		// If this was the best search we've gotten so far, save it.
-		if(happiness > maxHappiness) {
+		// ALSO: save it if we hit the max again, this way we get all solutions
+		if(happiness >= maxHappiness) {
 			maxHappiness = happiness;
 
-			if(tentIndex == (tentCount - 1))
-				saveTents();
+			// only save the solution if we're at the actual leaf
+			if(tentIndex == tentCount) {
+				cout << " [" << maxHappiness << "] ";
+				cout.flush();
+				saveTents(maxHappiness);
+			}
 		}
 
 		// Clean up from the search, so the next iteration can
@@ -236,17 +247,29 @@ int MakeHappy::combinationsPossible(const int n, const int r) {
 void MakeHappy::doSearch() {
 	Range range(camperCount);
 	int happy;
-	happy = search(range, 0, 0);
+	int maxHappy = 0;
+	happy = search(range, 0, 0, maxHappy);
 	cout << "Happiness: " << happy << endl;
-	cout << finalArrangement;
+
+	SaveNode * current = head;
+	while(current) {
+		if(current->score == happy) {
+			cout << current->arrangement << endl;
+		}
+		current = current->next;
+	}
 }
 
 
-void MakeHappy::saveTents() {
+void MakeHappy::saveTents(int score) {
 	ostringstream out;
+	SaveNode * data = new SaveNode();
 	for(int i = 0; i < tentCount; ++i)
 		out << tents[i].toString();
-	finalArrangement = out.str();
+	data->arrangement = out.str();
+	data->score = score;
+	data->next = head;
+	head = data;
 }
 
 
