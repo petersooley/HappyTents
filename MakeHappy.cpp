@@ -273,14 +273,20 @@ void MakeHappy::saveTents(int score) {
 }
 
 
-int main(void) {
+int main(int argc, char * argv[]) {
+
+	if(argc != 3) {
+		cout << "Oops. Try: './MakeHappy <prefTable> <tentList>'\n";
+		exit(1);
+	}
+
 
 	MakeHappy mh;
 	int max_campers = 16;
 	int max_tents = 5;
-	if(!mh.setupPrefsTable("prefTable.txt", max_campers))
+	if(!mh.setupPrefsTable(argv[1], max_campers))
 		return 1;
-	if(!mh.setupTents("tentList.txt", max_tents))
+	if(!mh.setupTents(argv[2], max_tents))
 		return 1;
 	mh.doSearch();
 
