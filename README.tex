@@ -1,0 +1,97 @@
+
+\documentclass{article}
+\usepackage{times}
+\usepackage{url}
+
+\begin{document}
+
+\title{Happy Tents} 
+\author{Peter Soots}
+\date{\today}
+\maketitle
+
+\section{The Problem}
+The original problem is defined here, \url{http://drdobbs.com/184410645}. Basically, the point is to arrange campers into tents in a way that makes as many people as happy as possible. Each camper rates their preferences of being in a tent with specific campers from -12 to 12. The specific instance data is given on the website, but overall there are 16 campers and 5 tents of capacities 2, 3, 3, 4, and 4.
+
+\section{Instance Data File Specifications}
+\subsection{Preference Table}
+Each line in the preference table file should contain:
+\begin{quote}
+	\textit{\textless camper1\textgreater \ \textless camper2\textgreater \  \textless camper1's rating of camper2\textgreater}
+\end{quote}
+i.e.:
+\begin{quote}
+	bob \ alan \ 4 \\
+	bob \ sam \ 10 \\
+	bob \ joe \ 3 \\
+	alan \ bob \ 2 \\ 
+	...
+\end{quote}
+
+\subsection{Tent List}
+Each line in the tent list file is just the capacity of a tent. So this file:
+\begin{quote}
+	2 \\
+	3 \\
+	3 \\
+	4 \\
+	4 
+\end{quote}
+has one 2-man tent, two 3-man tents, and two 4-man tents.
+
+\section{Building and Running}
+\texttt{\$ git clone git://github.com/psoots/HappyTents.git \\
+\$ make \\
+\$ ./MakeHappy prefTable.txt tentList.txt \\
+\$ ./MakeHappy prefTableDayAfter.txt tentList.txt} 
+
+\section{Design Considerations}
+
+I first tried to represent the traits as a tree, (not all at once, of course), where each depth was another camper placed into some tent and once a tent was full the remaining campers would be placed into the next tent and so on until the tents were all filled at which point you can calculate the happiness of all the campers. However, one of the problems with this is that some states would be repeated. For example, Bob and Alan in the same tent is no different than Alan and Bob in the same tent with all other tents remaining as they were. Their happiness level will not change. To fix this and look at only the unique states, I adjusted the tree so that each depth is a tent with some combination (not permutation) of campers in it. 
+
+Effectively I have set the tents as the variables and the combinations of campers as the values, rather than just the campers themselves. This reduced the number of states greatly: 
+\begin{displaymath} tent 1:\; _{16}P_{2} = 240 \end{displaymath}
+\begin{displaymath} tent 2:\; _{14}P_{3} = 2184 \end{displaymath}
+\begin{displaymath} tent 3:\; _{11}P_{3} = 990 \end{displaymath}
+\begin{displaymath} tent 4:\; _{8}P_{4} = 1680 \end{displaymath}
+\begin{displaymath} tent 5:\; _{4}P_{4} = 24 \end{displaymath}
+\begin{displaymath} 240 \cdot 2184\cdot 990\cdot 1680\cdot 24 = \textbf{20,922,789,888,000 states} \end{displaymath}
+
+\begin{displaymath} tent 1:\; _{16}C_{2} = 120 \end{displaymath}
+\begin{displaymath} tent 2:\; _{14}C_{3} = 364 \end{displaymath}
+\begin{displaymath} tent 3:\; _{11}C_{3} = 165 \end{displaymath}
+\begin{displaymath} tent 4:\; _{8}C_{4} = 70 \end{displaymath}
+\begin{displaymath} tent 5:\; _{4}C_{4} = 1 \end{displaymath}
+\begin{displaymath} 120 \cdot 364\cdot165\cdot 70\cdot 1 = \textbf{504,504,000 states} \end{displaymath}
+
+However, there is a problem with this approach, especially as I have implemented it. Namely, this single heuristic doesn't make it easy to implement other heuristics. And, if the instance size gets any bigger, other methods of searching could help reduce the time to find a solution. For example, if some heuristic were to show that some combinations typically yield a higher overall score than others, then sorting the combinations by most promising could give us a solution within the first few states. Unfortunately, as things are currently implemented, sorting the combinations before searching them could be a very expensive task. 
+
+\section{Benchmarks}
+These are the results of running the complete search on the linuxlab.cs.pdx.edu machines. The first instance is from the data given in the problem and the second instance is that data minus 4 per each expressed preference. The best score for the first instance was 175, and 92 for the second. Both ran to completion. 
+
+\begin{table}[!th]
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Trial} & \textbf{Time} \\
+\hline
+\multicolumn{2}{|c|}{First Instance Data} \\
+\hline
+1 & 15:09 \\
+\hline
+2 & 15:12 \\
+\hline
+\multicolumn{2}{|c|}{Second Instance Data} \\
+\hline
+1 & 15:17 \\
+\hline
+2 & 15:23 \\
+\hline
+\end{tabular}
+\end{table}
+
+These benchmarks would be much more interesting had I tried various sizes of instances rather than just changing the values.
+
+\section{Improvements}
+The primary heuristic I used took advantage of the symmetry in swapping campers within a tent, but I could also consider the symmetry of swapping campers between different tents of the same size. This would have been a little trickier to implement, but definitely worth it if instances of any greater size need to be tested.
+
+\end{document}
